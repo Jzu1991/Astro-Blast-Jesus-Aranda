@@ -64,7 +64,7 @@
   <button id="pauseBtn" onclick="togglePause()">⏸</button>
 
   <!-- ── BOTÓN FUEGO (alternativo, mobile) ── -->
-  <button id="fireBtn" onclick="fireComet()">FUEGO</button>
+  <button id="fireBtn" onclick="fireComet()" ontouchstart="event.stopPropagation()" ontouchend="event.stopPropagation()">FUEGO</button>
 
   <!-- ── PANTALLA DE PAUSA ── -->
   <div id="pauseScreen" class="screen">
@@ -99,5 +99,22 @@
 </div><!-- /gameContainer -->
 
 <script src="script.js"></script>
+
+<!-- Escalado automático del juego para cualquier pantalla -->
+<script>
+  function scaleGame() {
+    const container = document.getElementById('gameContainer');
+    const gameW = 360, gameH = 640;
+    const scaleX = window.innerWidth  / gameW;
+    const scaleY = window.innerHeight / gameH;
+    const scale  = Math.min(scaleX, scaleY); // mantiene proporción
+    container.style.transform = `scale(${scale})`;
+    // Ajusta el body para centrar correctamente
+    document.body.style.height = (gameH * scale) + 'px';
+  }
+  scaleGame();
+  window.addEventListener('resize', scaleGame);
+  window.addEventListener('orientationchange', scaleGame);
+</script>
 </body>
 </html>

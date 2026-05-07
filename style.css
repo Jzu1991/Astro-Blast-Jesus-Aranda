@@ -13,6 +13,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  min-height: 100dvh; /* soporte para mobile con barra de navegación */
   font-family: 'Courier New', monospace;
   overflow: hidden;
 }
@@ -23,6 +24,8 @@ body {
   height: 640px;
   overflow: hidden;
   background: #000;
+  /* Escalado automático para que llene la pantalla manteniendo proporción */
+  transform-origin: top center;
 }
 
 canvas {

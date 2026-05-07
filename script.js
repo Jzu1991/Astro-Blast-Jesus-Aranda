@@ -554,6 +554,7 @@ function getPos(e) {
 }
 
 gc.addEventListener('mousedown', e => {
+  if (e.target.tagName === 'BUTTON') return;
   if (state !== 'playing' || paused || inFlight) return;
   const p = getPos(e); aiming = true; aimX = p.x; aimY = p.y;
 });
@@ -566,6 +567,7 @@ gc.addEventListener('mouseup', () => {
 });
 
 gc.addEventListener('touchstart', e => {
+  if (e.target.tagName === 'BUTTON') return;
   e.preventDefault();
   if (state !== 'playing' || paused || inFlight) return;
   const p = getPos(e); aiming = true; aimX = p.x; aimY = p.y;
@@ -576,6 +578,7 @@ gc.addEventListener('touchmove', e => {
   const p = getPos(e); aimX = p.x; aimY = p.y;
 }, { passive: false });
 gc.addEventListener('touchend', e => {
+  if (e.target.tagName === 'BUTTON') return;
   e.preventDefault();
   if (!aiming) return; aiming = false; fireComet();
 }, { passive: false });
