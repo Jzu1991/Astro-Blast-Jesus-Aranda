@@ -584,4 +584,6 @@ gc.addEventListener('touchend', e => {
 }, { passive: false });
 
 // ── Init ──────────────────────────────────────────────────
-initStarsBg();
+document.addEventListener('DOMContentLoaded', function() {
+  initStarsBg();
+});
