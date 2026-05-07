@@ -98,6 +98,7 @@ function startGame() {
   document.getElementById('pauseBtn').classList.add('active');
   document.getElementById('fireBtn').classList.add('active');
   buildLevel();
+  startMusic();
   loop();
 }
 
@@ -109,6 +110,7 @@ function goMenu() {
   document.getElementById('pauseBtn').classList.remove('active');
   document.getElementById('fireBtn').classList.remove('active');
   paused = false;
+  stopMusic();
   cancelAnimationFrame(frameId);
 }
 
@@ -117,6 +119,7 @@ function restartLevel() {
   buildLevel();
   state = 'playing';
   paused = false;
+  startMusic();
   document.getElementById('hud').style.display = 'flex';
   document.getElementById('pauseBtn').classList.add('active');
   document.getElementById('fireBtn').classList.add('active');
@@ -148,32 +151,60 @@ function closeCfg() {
   document.getElementById('cfgPanel').classList.remove('active');
 }
 
+// ── Audio ─────────────────────────────────────────────────
+const audioCache = {};
+
+function loadSound(name) {
+  if (audioCache[name]) return audioCache[name];
+  const audio = new Audio('assets/audio/' + name + '.mp3');
+  audio.preload = 'auto';
+  audioCache[name] = audio;
+  return audio;
+}
+
+function playSound(name, volume = 1.0) {
+  if (!sfxOn) return;
+  try {
+    const original = loadSound(name);
+    const clone = original.cloneNode();
+    clone.volume = volume;
+    clone.play().catch(() => {});
+  } catch (e) {}
+}
+
+let bgMusic = null;
+
+function startMusic() {
+  if (!musicOn) return;
+  if (bgMusic && !bgMusic.paused) return;
+  try {
+    if (!bgMusic) {
+      bgMusic = new Audio('assets/audio/music_bg.mp3');
+      bgMusic.loop = true;
+      bgMusic.volume = 0.35;
+    }
+    bgMusic.play().catch(() => {});
+  } catch (e) {}
+}
+
+function stopMusic() {
+  if (bgMusic) { bgMusic.pause(); bgMusic.currentTime = 0; }
+}
+
+function preloadAudio() {
+  ['sfx_shoot','sfx_bounce','sfx_hit_rocky','sfx_hit_orange',
+   'sfx_hit_crystal','sfx_portal','sfx_victory','sfx_defeat'].forEach(loadSound);
+}
+
 function toggleMusic() {
   musicOn = !musicOn;
   document.getElementById('tMusic').classList.toggle('on', musicOn);
+  if (musicOn && state === 'playing') { startMusic(); } else { stopMusic(); }
 }
 
 function toggleSfx() {
   sfxOn = !sfxOn;
   document.getElementById('tSfx').classList.toggle('on', sfxOn);
-}
-
-// ── Audio (Web Audio API) ──────────────────────────────────
-function beep(freq = 440, dur = 0.1, type = 'sine') {
-  if (!sfxOn) return;
-  try {
-    const ac = new (window.AudioContext || window.webkitAudioContext)();
-    const o = ac.createOscillator();
-    const g = ac.createGain();
-    o.connect(g);
-    g.connect(ac.destination);
-    o.type = type;
-    o.frequency.value = freq;
-    g.gain.setValueAtTime(0.15, ac.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + dur);
-    o.start();
-    o.stop(ac.currentTime + dur);
-  } catch (e) {}
 }
 
 // ── Disparo ───────────────────────────────────────────────
@@ -195,7 +226,7 @@ function fireComet() {
   inFlight = true;
   comets--;
   updateHUD();
-  beep(880, 0.08, 'sawtooth');
+  playSound('sfx_shoot', 0.8);
 }
 
 // ── Partículas ────────────────────────────────────────────
@@ -241,9 +272,9 @@ function updateComet() {
   comet.y  += comet.vy;
 
   // Rebotes en paredes del campo
-  if (comet.x - comet.r < 0)  { comet.x = comet.r;     comet.vx =  Math.abs(comet.vx); beep(300, 0.05); }
-  if (comet.x + comet.r > W)  { comet.x = W - comet.r; comet.vx = -Math.abs(comet.vx); beep(300, 0.05); }
-  if (comet.y - comet.r < 0)  { comet.y = comet.r;     comet.vy =  Math.abs(comet.vy); beep(300, 0.05); }
+  if (comet.x - comet.r < 0)  { comet.x = comet.r;     comet.vx =  Math.abs(comet.vx); playSound('sfx_bounce', 0.5); }
+  if (comet.x + comet.r > W)  { comet.x = W - comet.r; comet.vx = -Math.abs(comet.vx); playSound('sfx_bounce', 0.5); }
+  if (comet.y - comet.r < 0)  { comet.y = comet.r;     comet.vy =  Math.abs(comet.vy); playSound('sfx_bounce', 0.5); }
 
   // Paredes anguladas (variante de mecánica)
   walls.forEach(w => {
@@ -253,7 +284,7 @@ function updateComet() {
       comet.vy = ref.vy;
       w.hit = 8;
       shootParticles(comet.x, comet.y, '#4af', 5);
-      beep(500, 0.06, 'square');
+      playSound('sfx_bounce', 0.7);
     }
   });
 
@@ -271,7 +302,10 @@ function updateComet() {
         if (a.type === 'crystal') multiplier = Math.min(multiplier + 1, 10);
         updateHUD();
         shootParticles(a.x, a.y, t.hitColor, 12);
-        beep(a.type === 'orange' ? 660 : a.type === 'crystal' ? 880 : 440, 0.12);
+        playSound(
+          a.type === 'orange' ? 'sfx_hit_orange' :
+          a.type === 'crystal' ? 'sfx_hit_crystal' : 'sfx_hit_rocky', 0.9
+        );
       }
       // Rebote físico contra el asteroide
       const nx = (comet.x - a.x) / dist;
@@ -288,7 +322,7 @@ function updateComet() {
       comet.x < portalX + portalW) {
     comets++;
     updateHUD();
-    beep(1200, 0.15, 'sine');
+    playSound('sfx_portal', 0.9);
     shootParticles(comet.x, PORTAL_Y, '#d4f', 15);
     endTurn();
     return;
@@ -324,17 +358,16 @@ function checkWinLose() {
     document.getElementById('winBonus').textContent  = 'Bonus cometas sobrantes: +' + bonus.toLocaleString();
     document.getElementById('winScreen').classList.add('active');
     document.getElementById('hud').style.display = 'none';
-    beep(1047, 0.3, 'sine');
-    setTimeout(() => beep(1319, 0.3, 'sine'), 200);
-    setTimeout(() => beep(1568, 0.5, 'sine'), 400);
+    stopMusic();
+    playSound('sfx_victory', 1.0);
   } else if (comets <= 0) {
     // Derrota
     state = 'lose';
     document.getElementById('loseScore').textContent = 'Puntaje: ' + score.toLocaleString();
     document.getElementById('loseScreen').classList.add('active');
     document.getElementById('hud').style.display = 'none';
-    beep(220, 0.4, 'sawtooth');
-    setTimeout(() => beep(180, 0.5, 'sawtooth'), 300);
+    stopMusic();
+    playSound('sfx_defeat', 1.0);
   }
 }
 
@@ -586,4 +619,5 @@ gc.addEventListener('touchend', e => {
 // ── Init ──────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
   initStarsBg();
+  preloadAudio();
 });
