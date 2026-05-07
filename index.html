@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>AstroBlast: Cosmic Rebound</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="gameContainer">
+
+  <!-- Canvas principal del juego -->
+  <canvas id="c" width="360" height="640"></canvas>
+
+  <!-- ── PANTALLA DE INICIO ── -->
+  <div id="startScreen" class="screen active">
+    <canvas class="stars-bg" id="starsBg" width="360" height="640"></canvas>
+    <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center">
+      <div style="font-size:11px;color:#678;letter-spacing:4px;margin-bottom:8px">ACADEMIA ORBITAL KEPLER</div>
+      <div class="game-title">✦ ASTROBLAST ✦</div>
+      <div class="game-subtitle">COSMIC REBOUND</div>
+      <div style="width:60px;height:1px;background:#4af;margin-bottom:30px;opacity:0.5"></div>
+      <button class="btn" onclick="startGame()" style="font-size:17px;padding:14px 48px">▶ PLAY</button>
+      <button class="btn" onclick="openCfg()" style="font-size:12px;margin-top:4px">⚙ CONFIGURACIÓN</button>
+      <div style="margin-top:36px;font-size:10px;color:#456;text-align:center;line-height:1.8">
+        Arrastrá para apuntar · Soltá para disparar<br>
+        Destruí todos los asteroides naranja ◉
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL DE CONFIGURACIÓN (superpuesto) ── -->
+  <div id="cfgPanel">
+    <div class="cfg-title">⚙ CONFIGURACIÓN</div>
+    <div class="toggle-row">
+      <span>Música</span>
+      <div class="toggle on" id="tMusic" onclick="toggleMusic()"></div>
+    </div>
+    <div class="toggle-row">
+      <span>Efectos de sonido</span>
+      <div class="toggle on" id="tSfx" onclick="toggleSfx()"></div>
+    </div>
+    <button class="btn" onclick="closeCfg()" style="margin-top:30px">← VOLVER</button>
+  </div>
+
+  <!-- ── HUD (durante el juego) ── -->
+  <div id="hud">
+    <div class="hud-box">
+      <div class="hud-val" id="hudScore">0</div>
+      <div class="hud-label">PUNTAJE</div>
+    </div>
+    <div class="hud-box">
+      <div class="hud-val" id="hudComets">10</div>
+      <div class="hud-label">COMETAS</div>
+    </div>
+    <div class="hud-box">
+      <div class="hud-val" id="hudMult">×1</div>
+      <div class="hud-label">MULT</div>
+    </div>
+  </div>
+
+  <!-- ── BOTÓN PAUSA ── -->
+  <button id="pauseBtn" onclick="togglePause()">⏸</button>
+
+  <!-- ── BOTÓN FUEGO (alternativo, mobile) ── -->
+  <button id="fireBtn" onclick="fireComet()">FUEGO</button>
+
+  <!-- ── PANTALLA DE PAUSA ── -->
+  <div id="pauseScreen" class="screen">
+    <div style="font-size:20px;color:#4af;margin-bottom:30px;letter-spacing:3px">⏸ PAUSA</div>
+    <button class="btn" onclick="togglePause()">▶ CONTINUAR</button>
+    <button class="btn" onclick="restartLevel()">↺ REINICIAR NIVEL</button>
+    <button class="btn" onclick="openCfg()">⚙ CONFIGURACIÓN</button>
+    <button class="btn" onclick="goMenu()">⌂ MENÚ PRINCIPAL</button>
+  </div>
+
+  <!-- ── PANTALLA DE VICTORIA ── -->
+  <div id="winScreen" class="screen">
+    <div class="supernova">✦ SUPERNOVA FEVER ✦</div>
+    <div class="result-title" style="color:#4f8;margin-top:12px">¡VICTORIA!</div>
+    <div style="font-size:12px;color:#6a9;margin-bottom:6px">Sector 1 — Cinturón de Vega completado</div>
+    <div class="result-score" id="winScore"></div>
+    <div id="winBonus" style="font-size:13px;color:#fa0;margin-bottom:24px"></div>
+    <button class="btn" onclick="restartLevel()">↺ REINTENTAR</button>
+    <button class="btn" onclick="goMenu()">⌂ MENÚ PRINCIPAL</button>
+  </div>
+
+  <!-- ── PANTALLA DE DERROTA ── -->
+  <div id="loseScreen" class="screen">
+    <div class="result-title" style="color:#f44">SIN COMETAS</div>
+    <div style="font-size:13px;color:#f84;margin-bottom:10px">¡Misión fallida, cadete!</div>
+    <div style="font-size:11px;color:#765;margin-bottom:6px">Quedan asteroides naranja sin destruir</div>
+    <div class="result-score" id="loseScore"></div>
+    <button class="btn danger" onclick="restartLevel()">↺ REINTENTAR</button>
+    <button class="btn" onclick="goMenu()">⌂ MENÚ PRINCIPAL</button>
+  </div>
+
+</div><!-- /gameContainer -->
+
+<script src="script.js"></script>
+</body>
+</html>

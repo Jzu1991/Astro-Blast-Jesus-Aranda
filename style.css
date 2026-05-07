@@ -1,0 +1,302 @@
+/* AstroBlast: Cosmic Rebound - style.css */
+/* Alumno: Jesús Aranda */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: 'Courier New', monospace;
+  overflow: hidden;
+}
+
+#gameContainer {
+  position: relative;
+  width: 360px;
+  height: 640px;
+  overflow: hidden;
+  background: #000;
+}
+
+canvas {
+  display: block;
+}
+
+/* ── Pantallas ── */
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  z-index: 10;
+}
+
+.screen.active {
+  display: flex;
+}
+
+#startScreen {
+  background: linear-gradient(180deg, #000820 0%, #001040 50%, #000820 100%);
+}
+
+#pauseScreen {
+  background: rgba(0, 5, 20, 0.92);
+}
+
+#winScreen {
+  background: rgba(0, 10, 5, 0.95);
+}
+
+#loseScreen {
+  background: rgba(20, 0, 0, 0.95);
+}
+
+/* ── Tipografía de título ── */
+.game-title {
+  font-size: 28px;
+  color: #4af;
+  text-align: center;
+  text-shadow: 0 0 20px #4af;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.game-subtitle {
+  font-size: 13px;
+  color: #89c;
+  margin-bottom: 40px;
+  letter-spacing: 3px;
+}
+
+/* ── Botones ── */
+.btn {
+  padding: 12px 32px;
+  border: 2px solid #4af;
+  background: rgba(0, 120, 255, 0.15);
+  color: #4af;
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  cursor: pointer;
+  letter-spacing: 2px;
+  transition: all 0.2s;
+  border-radius: 4px;
+  margin: 6px;
+}
+
+.btn:hover {
+  background: rgba(0, 120, 255, 0.35);
+  box-shadow: 0 0 15px #4af;
+}
+
+.btn.danger {
+  border-color: #f84;
+  color: #f84;
+  background: rgba(255, 128, 0, 0.1);
+}
+
+.btn.danger:hover {
+  background: rgba(255, 128, 0, 0.3);
+  box-shadow: 0 0 15px #f84;
+}
+
+/* ── Panel de configuración ── */
+#cfgPanel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 5, 20, 0.95);
+  z-index: 20;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+#cfgPanel.active {
+  display: flex;
+}
+
+.cfg-title {
+  font-size: 20px;
+  color: #4af;
+  margin-bottom: 30px;
+  letter-spacing: 3px;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 220px;
+  margin: 12px 0;
+  font-size: 14px;
+  color: #89c;
+}
+
+.toggle {
+  width: 48px;
+  height: 26px;
+  background: #222;
+  border-radius: 13px;
+  position: relative;
+  cursor: pointer;
+  border: 1px solid #4af;
+  transition: background 0.2s;
+}
+
+.toggle.on {
+  background: #4af;
+}
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  top: 2px;
+  left: 3px;
+  transition: left 0.2s;
+}
+
+.toggle.on::after {
+  left: 25px;
+}
+
+/* ── HUD ── */
+#hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 8px 12px;
+  display: none;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 5;
+  pointer-events: none;
+  background: rgba(0, 5, 20, 0.6);
+}
+
+#hud.active {
+  display: flex;
+}
+
+.hud-val {
+  font-size: 13px;
+  color: #4af;
+  text-align: center;
+}
+
+.hud-label {
+  font-size: 9px;
+  color: #678;
+  text-align: center;
+}
+
+.hud-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Botón pausa ── */
+#pauseBtn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 50, 100, 0.6);
+  border: 1px solid #4af;
+  color: #4af;
+  font-size: 16px;
+  cursor: pointer;
+  display: none;
+  z-index: 15;
+  border-radius: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+#pauseBtn.active {
+  display: flex;
+}
+
+/* ── Botón FUEGO ── */
+#fireBtn {
+  position: absolute;
+  bottom: 20px;
+  right: 14px;
+  width: 56px;
+  height: 56px;
+  background: rgba(255, 80, 0, 0.2);
+  border: 2px solid #f84;
+  color: #f84;
+  font-size: 10px;
+  cursor: pointer;
+  display: none;
+  z-index: 15;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  letter-spacing: 1px;
+  pointer-events: auto;
+  font-family: 'Courier New', monospace;
+}
+
+#fireBtn.active {
+  display: flex;
+}
+
+/* ── Pantalla de victoria ── */
+.supernova {
+  font-size: 20px;
+  color: #fa0;
+  text-shadow: 0 0 20px #fa0;
+  letter-spacing: 2px;
+  animation: pulse 0.8s infinite alternate;
+  text-align: center;
+  padding: 0 16px;
+}
+
+@keyframes pulse {
+  from { opacity: 0.7; transform: scale(1); }
+  to   { opacity: 1;   transform: scale(1.05); }
+}
+
+.result-title {
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+
+.result-score {
+  font-size: 15px;
+  color: #89c;
+  margin-bottom: 30px;
+}
+
+/* ── Stars background canvas ── */
+.stars-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
