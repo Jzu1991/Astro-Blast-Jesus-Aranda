@@ -185,7 +185,7 @@ function fireComet() {
   if (inFlight || state !== 'playing' || paused) return;
   if (comets <= 0) return;
   const angle = getAimAngle();
-  const spd = 7;
+  const spd = 5;
   comet = {
     x: SAT_X, y: SAT_Y + 20,
     vx: Math.cos(angle) * spd,
